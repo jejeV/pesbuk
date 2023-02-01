@@ -11,11 +11,12 @@ from .models import Profile, Post
 def index(request):
     user_objects = User.objects.get(username=request.user.username)
     user_profile = Profile.objects.get(user=user_objects)
-    return render(request, 'index.html', {'user_profile': user_profile})
+
+    posts = Post.objects.all()
+    return render(request, 'index.html', {'user_profile': user_profile, 'posts': posts})
 
 @login_required(login_url='signin')
 def upload(request):
-
     if request.method == 'POST':
         user = request.user.username
         image = request.FILES.get('image_upload')
@@ -24,9 +25,10 @@ def upload(request):
         new_post = Post.objects.create(user=user, image=image, caption=caption)
         new_post.save()
 
-        return redirect('/')
+        return redirect('/') 
     else:
         return redirect('/')
+    return HttpResponse('<h1>Upload View</h1>')
 
 @login_required(login_url='signin')
 def settings(request):
